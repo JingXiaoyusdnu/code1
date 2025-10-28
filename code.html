@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>实验代码HTML展示</title>
+    <style>
+        body {
+            background-color: #f5f5f5;
+            font-family: "Consolas", "Monaco", monospace;
+            margin: 20px;
+        }
+        .code-section {
+            background-color: #2b2b2b;
+            color: #cccccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .code-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <div class="code-section">
+        <div class="code-title">任务1：学生信息管理程序</div>
+        <pre>
+#include &lt;iostream&gt;
+#include &lt;string&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+struct Student {
+    string name;
+    double chinese;
+    double math;
+    double english;
+};
+
+int main() {
+    int n;
+    cin >> n;
+    Student students[n];
+
+    // 输入学生信息
+    for (int i = 0; i < n; i++) {
+        cin >> students[i].name >> students[i].chinese 
+            >> students[i].math >> students[i].english;
+    }
+
+    // 输出表头
+    cout << fixed << setprecision(2);
+    cout << setw(10) << left << "Name" 
+         << setw(10) << "Chinese" 
+         << setw(10) << "Math" 
+         << setw(10) << "English" 
+         << setw(10) << "Average" << endl;
+
+    // 输出学生信息与平均分
+    for (int i = 0; i < n; i++) {
+        double avg = (students[i].chinese + students[i].math + students[i].english) / 3;
+        cout << setw(10) << left << students[i].name 
+             << setw(10) << students[i].chinese 
+             << setw(10) << students[i].math 
+             << setw(10) << students[i].english 
+             << setw(10) << avg;
+        if (avg >= 90) {
+            cout << "Excellent";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+        </pre>
+    </div>
+
+    <div class="code-section">
+        <div class="code-title">任务2：元音字母统计程序</div>
+        <pre>
+#include &lt;iostream&gt;
+#include &lt;cctype&gt;
+using namespace std;
+
+int countVowels(const char* p) {
+    int count = 0;
+    while (*p != '\0') {
+        char c = tolower(*p);
+        if (c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u') {
+            count++;
+        }
+        p++;
+    }
+    return count;
+}
+
+int main() {
+    char str[100];
+    cout << "Enter a string: ";
+    cin.getline(str, 100);
+    int vowels = countVowels(str);
+    cout << "Number of vowels: " << vowels << endl;
+    return 0;
+}
+        </pre>
+    </div>
+
+    <div class="code-section">
+        <div class="code-title">任务3：多功能计算器程序</div>
+        <pre>
+#include &lt;iostream&gt;
+#include &lt;iomanip&gt;
+using namespace std;
+
+// 内联函数，计算平方
+inline double square(double x) {
+    return x * x;
+}
+
+// 带默认参数的函数，计算幂
+double power(double base, int exponent = 2) {
+    if (exponent == 0) {
+        return 1.0;
+    }
+    double result = 1.0;
+    for (int i = 0; i < exponent; i++) {
+        result *= base;
+    }
+    return result;
+}
+
+// 重载函数，double类型运算
+double calc(double a, double b, char op) {
+    switch (op) {
+        case '+': return a + b;
+        case '-': return a - b;
+        case '*': return a * b;
+        case '/': 
+            if (b == 0) {
+                cout << "Error: divide by zero" << endl;
+                return 0.0;
+            }
+            return a / b;
+        default: 
+            cout << "Invalid operator" << endl;
+            return 0.0;
+    }
+}
+
+// 重载函数，int类型运算
+double calc(int a, int b, char op) {
+    return calc(static_cast<double>(a), static_cast<double>(b), op);
+}
+
+int main() {
+    double a, b;
+    char op;
+    cin >> a >> b >> op;
+
+    cout << fixed << setprecision(2);
+    cout << "square(" << a << ") = " << square(a) << endl;
+    cout << "power(" << a << ",3) = " << power(a, 3) << endl;
+    
+    double res = calc(a, b, op);
+    if (op != '/' || b != 0) {
+        cout << a << " " << op << " " << b << " = " << res << endl;
+    }
+
+    return 0;
+}
+        </pre>
+    </div>
+
+    <div class="code-section">
+        <div class="code-title">任务4：引用交换程序</div>
+        <pre>
+#include &lt;iostream&gt;
+using namespace std;
+
+// 引用版本，交换两个整数
+void swap(int& x, int& y) {
+    int temp = x;
+    x = y;
+    y = temp;
+}
+
+// 重载，指针版本，交换两个整数
+void swap(int* x, int* y) {
+    int temp = *x;
+    *x = *y;
+    *y = temp;
+}
+
+int main() {
+    int x, y;
+    cin >> x >> y;
+    cout << "Before swap: x=" << x << ", y=" << y << endl;
+    
+    // 调用引用版本swap
+    swap(x, y);
+    // 若调用指针版本，需改为：swap(&x, &y);
+    
+    cout << "After swap: x=" << x << ", y=" << y << endl;
+    return 0;
+}
+        </pre>
+    </div>
+</body>
+</html>
