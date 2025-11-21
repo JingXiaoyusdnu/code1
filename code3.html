@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>MyArray类代码文档</title>
+    <style>
+        body { font-family: "Microsoft YaHei", sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f8f9fa; }
+        .container { max-width: 1200px; margin: 0 auto; background: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 30px; }
+        h2 { color: #3498db; margin-top: 40px; border-left: 4px solid #3498db; padding-left: 10px; }
+        .code-box { background-color: #f5f5f5; border-radius: 6px; padding: 20px; margin: 15px 0; overflow-x: auto; }
+        pre { margin: 0; font-size: 14px; line-height: 1.5; }
+        .keyword { color: #0033b3; font-weight: bold; }
+        .type { color: #7d5bbf; }
+        .comment { color: #008000; }
+        .string { color: #a31515; }
+        .function { color: #795e26; }
+        .variable { color: #1750eb; }
+        .file-note { color: #666; font-style: italic; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>MyArray类完整代码文档</h1>
+        <p>本文档包含MyArray类的头文件、实现文件和主测试文件的完整代码，采用代码高亮展示，便于阅读和调试。</p>
+
+        <!-- 头文件 MyArray.h -->
+        <h2>1. 头文件：MyArray.h（类声明）</h2>
+        <p class="file-note">功能：声明MyArray类的私有数据成员和公共成员函数接口</p>
+        <div class="code-box">
+            <pre><code><span class="keyword">#ifndef</span> MYARRAY_H
+<span class="keyword">#define</span> MYARRAY_H
+
+<span class="keyword">class</span> <span class="type">MyArray</span> {
+<span class="keyword">private</span>:
+    <span class="type">int</span>* <span class="variable">p</span>;     <span class="comment">// 指向动态分配的数组空间</span>
+    <span class="type">int</span> <span class="variable">N</span>;      <span class="comment">// 数组元素个数</span>
+<span class="keyword">public</span>:
+    <span class="type">MyArray</span>();                          <span class="comment">// 默认构造函数</span>
+    <span class="type">MyArray</span>(<span class="type">int</span> n, <span class="type">int</span> initVal = 0);    <span class="comment">// 带默认参数的构造函数</span>
+    <span class="type">MyArray</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other);      <span class="comment">// 拷贝构造函数</span>
+    ~<span class="type">MyArray</span>();                         <span class="comment">// 析构函数</span>
+
+    <span class="type">MyArray</span> <span class="function">merge</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other); <span class="comment">// 数组合并函数</span>
+    <span class="type">MyArray</span> <span class="function">add</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other);   <span class="comment">// 加法运算函数</span>
+    <span class="type">MyArray</span> <span class="function">subtract</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other); <span class="comment">// 减法运算函数</span>
+    <span class="type">MyArray</span> <span class="function">multiply</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other); <span class="comment">// 乘法运算函数</span>
+    <span class="type">MyArray</span> <span class="function">divide</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other);   <span class="comment">// 除法运算函数</span>
+
+    <span class="type">void</span> <span class="function">printArray</span>();                  <span class="comment">// 打印数组元素</span>
+    <span class="type">int</span> <span class="function">getSize</span>();                      <span class="comment">// 获取数组长度</span>
+};
+
+<span class="keyword">#endif</span> <span class="comment">// MYARRAY_H</span></code></pre>
+        </div>
+
+        <!-- 实现文件 MyArray.cpp -->
+        <h2>2. 实现文件：MyArray.cpp（成员函数实现）</h2>
+        <p class="file-note">功能：实现MyArray类声明的所有成员函数，包含构造、析构、运算等核心逻辑</p>
+        <div class="code-box">
+            <pre><code><span class="keyword">#include</span> <span class="string">"MyArray.h"</span>
+<span class="keyword">#include</span> <span class="string"><iostream></span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> std;
+
+<span class="comment">// 默认构造函数：创建空数组</span>
+<span class="type">MyArray</span>::<span class="function">MyArray</span>() {
+    p = nullptr;
+    N = 0;
+}
+
+<span class="comment">// 带参数构造函数：指定长度和初始值</span>
+<span class="type">MyArray</span>::<span class="function">MyArray</span>(<span class="type">int</span> n, <span class="type">int</span> initVal) {
+    <span class="keyword">if</span> (n <= 0) {
+        p = nullptr;
+        N = 0;
+        <span class="keyword">return</span>;
+    }
+    N = n;
+    p = <span class="keyword">new</span> <span class="type">int</span>[N];
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        p[i] = initVal;
+    }
+}
+
+<span class="comment">// 拷贝构造函数：深拷贝</span>
+<span class="type">MyArray</span>::<span class="function">MyArray</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    N = other.N;
+    <span class="keyword">if</span> (N == 0) {
+        p = nullptr;
+        <span class="keyword">return</span>;
+    }
+    p = <span class="keyword">new</span> <span class="type">int</span>[N];
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        p[i] = other.p[i];
+    }
+}
+
+<span class="comment">// 析构函数：释放动态内存</span>
+<span class="type">MyArray</span>::~<span class="function">MyArray</span>() {
+    <span class="keyword">if</span> (p != nullptr) {
+        <span class="keyword">delete</span>[] p;
+        p = nullptr;
+        N = 0;
+    }
+}
+
+<span class="comment">// 数组合并</span>
+<span class="type">MyArray</span> <span class="type">MyArray</span>::<span class="function">merge</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    <span class="type">MyArray</span> newArr(N + other.N);
+    <span class="type">int</span> idx = 0;
+    <span class="comment">// 复制当前对象数组元素</span>
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        newArr.p[idx++] = p[i];
+    }
+    <span class="comment">// 复制另一个对象数组元素</span>
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < other.N; i++) {
+        newArr.p[idx++] = other.p[i];
+    }
+    <span class="keyword">return</span> newArr;
+}
+
+<span class="comment">// 加法运算</span>
+<span class="type">MyArray</span> <span class="type">MyArray</span>::<span class="function">add</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    <span class="keyword">if</span> (N != other.N) {
+        cout << <span class="string">"数组长度不一致，无法执行加法运算"</span> << endl;
+        <span class="keyword">return</span> <span class="type">MyArray</span>();
+    }
+    <span class="type">MyArray</span> res(N);
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        res.p[i] = p[i] + other.p[i];
+    }
+    <span class="keyword">return</span> res;
+}
+
+<span class="comment">// 减法运算</span>
+<span class="type">MyArray</span> <span class="type">MyArray</span>::<span class="function">subtract</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    <span class="keyword">if</span> (N != other.N) {
+        cout << <span class="string">"数组长度不一致，无法执行减法运算"</span> << endl;
+        <span class="keyword">return</span> <span class="type">MyArray</span>();
+    }
+    <span class="type">MyArray</span> res(N);
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        res.p[i] = p[i] - other.p[i];
+    }
+    <span class="keyword">return</span> res;
+}
+
+<span class="comment">// 乘法运算</span>
+<span class="type">MyArray</span> <span class="type">MyArray</span>::<span class="function">multiply</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    <span class="keyword">if</span> (N != other.N) {
+        cout << <span class="string">"数组长度不一致，无法执行乘法运算"</span> << endl;
+        <span class="keyword">return</span> <span class="type">MyArray</span>();
+    }
+    <span class="type">MyArray</span> res(N);
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        res.p[i] = p[i] * other.p[i];
+    }
+    <span class="keyword">return</span> res;
+}
+
+<span class="comment">// 除法运算</span>
+<span class="type">MyArray</span> <span class="type">MyArray</span>::<span class="function">divide</span>(<span class="keyword">const</span> <span class="type">MyArray</span>& other) {
+    <span class="keyword">if</span> (N != other.N) {
+        cout << <span class="string">"数组长度不一致，无法执行除法运算"</span> << endl;
+        <span class="keyword">return</span> <span class="type">MyArray</span>();
+    }
+    <span class="type">MyArray</span> res(N);
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        <span class="keyword">if</span> (other.p[i] == 0) {
+            cout << <span class="string">"第"</span> << i << <span class="string">"个元素除数为0，无法执行除法"</span> << endl;
+            res.p[i] = 0;
+            <span class="keyword">continue</span>;
+        }
+        res.p[i] = p[i] / other.p[i];
+    }
+    <span class="keyword">return</span> res;
+}
+
+<span class="comment">// 打印数组</span>
+<span class="type">void</span> <span class="type">MyArray</span>::<span class="function">printArray</span>() {
+    <span class="keyword">if</span> (N == 0) {
+        cout << <span class="string">"数组为空"</span> << endl;
+        <span class="keyword">return</span>;
+    }
+    cout << <span class="string">"数组元素："</span>;
+    <span class="keyword">for</span> (<span class="type">int</span> i = 0; i < N; i++) {
+        cout << p[i] << <span class="string">" "</span>;
+    }
+    cout << endl;
+}
+
+<span class="comment">// 获取数组长度</span>
+<span class="type">int</span> <span class="type">MyArray</span>::<span class="function">getSize</span>() {
+    <span class="keyword">return</span> N;
+}</code></pre>
+        </div>
+
+        <!-- 主测试文件 main.cpp -->
+        <h2>3. 主测试文件：main.cpp（功能测试）</h2>
+        <p class="file-note">功能：创建MyArray对象，测试所有成员函数的功能正确性，包含边界情况测试</p>
+        <div class="code-box">
+            <pre><code><span class="keyword">#include</span> <span class="string">"MyArray.h"</span>
+<span class="keyword">#include</span> <span class="string"><iostream></span>
+<span class="keyword">using</span> <span class="keyword">namespace</span> std;
+
+<span class="type">int</span> <span class="function">main</span>() {
+    <span class="comment">// 测试构造函数</span>
+    <span class="type">MyArray</span> arr1(3, 2);
+    cout << <span class="string">"arr1长度："</span> << arr1.getSize() << endl;
+    arr1.printArray();
+
+    <span class="type">MyArray</span> arr2(3, 3);
+    cout << <span class="string">"arr2长度："</span> << arr2.getSize() << endl;
+    arr2.printArray();
+
+    <span class="comment">// 测试拷贝构造函数</span>
+    <span class="type">MyArray</span> arr3 = arr1;
+    cout << <span class="string">"arr3（拷贝arr1）长度："</span> << arr3.getSize() << endl;
+    arr3.printArray();
+
+    <span class="comment">// 测试数组合并</span>
+    <span class="type">MyArray</span> mergedArr = arr1.merge(arr2);
+    cout << <span class="string">"合并后数组长度："</span> << mergedArr.getSize() << endl;
+    mergedArr.printArray();
+
+    <span class="comment">// 测试四则运算</span>
+    <span class="type">MyArray</span> addRes = arr1.add(arr2);
+    cout << <span class="string">"arr1 + arr2："</span>;
+    addRes.printArray();
+
+    <span class="type">MyArray</span> subRes = arr1.subtract(arr2);
+    cout << <span class="string">"arr1 - arr2："</span>;
+    subRes.printArray();
+
+    <span class="type">MyArray</span> mulRes = arr1.multiply(arr2);
+    cout << <span class="string">"arr1 * arr2："</span>;
+    mulRes.printArray();
+
+    <span class="type">MyArray</span> divRes = arr1.divide(arr2);
+    cout << <span class="string">"arr1 / arr2："</span>;
+    divRes.printArray();
+
+    <span class="comment">// 测试边界情况：长度不一致</span>
+    <span class="type">MyArray</span> arr4(2, 5);
+    <span class="type">MyArray</span> errAdd = arr1.add(arr4);
+    errAdd.printArray();
+
+    <span class="keyword">return</span> 0;
+}</code></pre>
+        </div>
+
+        <h2>使用说明</h2>
+        <ul>
+            <li>将上述代码分别保存为三个文件：MyArray.h、MyArray.cpp、main.cpp</li>
+            <li>在Visual Studio等C++开发环境中创建项目，添加这三个文件并编译运行</li>
+            <li>运行结果将验证构造函数、拷贝构造、合并、四则运算等功能的正确性</li>
+            <li>代码包含详细注释，便于理解各函数的实现逻辑</li>
+        </ul>
+    </div>
+</body>
+</html>
